@@ -1,0 +1,1074 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Sports Teams</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f4f5f7;
+        --surface: #ffffff;
+        --surface-2: #eceef1;
+        --ink: #16181d;
+        --ink-2: #454b54;
+        --ink-3: #6b7280;
+        --line: #d9dce1;
+        --live: #b91c1c;
+        --win: #166534;
+        --focus: #2563eb;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #101216;
+          --surface: #1a1d23;
+          --surface-2: #23262e;
+          --ink: #f1f2f4;
+          --ink-2: #c3c8d1;
+          --ink-3: #9aa1ad;
+          --line: #33373f;
+          --live: #f87171;
+          --win: #4ade80;
+          --focus: #7aa5ff;
+        }
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 1060px; margin: 0 auto; padding: 0 16px 56px; }
+
+      header.page { padding: 28px 0 8px; }
+      h1 {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-size: clamp(2.1rem, 6vw, 3rem);
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        margin: 0 0 6px;
+        line-height: 1.05;
+      }
+      .lede { margin: 0; color: var(--ink-2); max-width: 62ch; font-size: 1.02rem; }
+      .status-row {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;
+        margin-top: 16px;
+      }
+      #statusText { color: var(--ink-2); font-size: 0.92rem; margin: 0; }
+      .btn {
+        appearance: none; border: 1px solid var(--line); background: var(--surface);
+        color: var(--ink); border-radius: 8px; padding: 8px 16px;
+        font: inherit; font-weight: 600; font-size: 0.95rem; cursor: pointer;
+        min-height: 40px; display: inline-flex; align-items: center; gap: 8px;
+      }
+      .btn:hover { background: var(--surface-2); }
+      .btn:disabled { opacity: 0.55; cursor: default; }
+      .btn:focus-visible, a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+      .banner {
+        display: none; margin-top: 14px; padding: 12px 14px; border-radius: 8px;
+        background: var(--surface); border: 1px solid var(--line);
+        color: var(--ink-2); font-size: 0.95rem;
+        align-items: center; gap: 12px; flex-wrap: wrap;
+      }
+      .banner.show { display: flex; }
+      .banner .btn { min-height: 36px; padding: 6px 14px; }
+
+      nav.teams-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 4px; }
+      nav.teams-nav a {
+        display: inline-flex; align-items: center; gap: 8px; min-height: 38px;
+        padding: 6px 13px; border-radius: 999px; border: 1px solid var(--line);
+        background: var(--surface); color: var(--ink); text-decoration: none;
+        font-weight: 600; font-size: 0.92rem;
+      }
+      nav.teams-nav a:hover { background: var(--surface-2); }
+      .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--c, #888); }
+
+      h2.section-title {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-size: 1.55rem; font-weight: 600; text-transform: uppercase;
+        letter-spacing: 0.03em; margin: 34px 0 12px;
+      }
+
+      .next-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .next-item {
+        display: flex; gap: 12px; align-items: flex-start; text-decoration: none;
+        background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+        padding: 13px 14px; color: var(--ink);
+      }
+      .next-item .dot { margin-top: 6px; }
+      .next-item:hover { background: var(--surface-2); }
+      .next-item .tname { font-weight: 700; font-size: 0.98rem; }
+      .next-item .tdetail { color: var(--ink-2); font-size: 0.92rem; margin-top: 1px; }
+      .live-tag {
+        display: inline-block; font-weight: 700; color: var(--live);
+        font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em;
+      }
+
+      .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .card {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+        padding: 18px 18px 14px; border-top: 5px solid var(--c, #888);
+        scroll-margin-top: 16px;
+      }
+      .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+      .card h3 {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-size: 1.5rem; font-weight: 700; margin: 0; line-height: 1.1;
+      }
+      .league { color: var(--ink-3); font-size: 0.88rem; font-weight: 600; margin-top: 3px; }
+      .record { text-align: right; flex: none; }
+      .record .num {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-size: 1.9rem; font-weight: 700; line-height: 1;
+      }
+      .record .lbl { color: var(--ink-3); font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+      .standing { color: var(--ink-2); font-size: 0.95rem; margin: 8px 0 0; }
+      .badge {
+        display: inline-block; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.04em;
+        text-transform: uppercase; color: var(--ink-2); background: var(--surface-2);
+        border-radius: 5px; padding: 2px 7px; margin-left: 8px; vertical-align: 2px;
+      }
+      .game { border-top: 1px solid var(--line); padding: 11px 0 3px; margin-top: 12px; }
+      .game .g-label {
+        font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.07em; color: var(--ink-3); margin: 0 0 3px;
+      }
+      .game .g-label.live { color: var(--live); }
+      .game .g-title { font-weight: 600; font-size: 1.04rem; margin: 0; }
+      .game .g-meta { color: var(--ink-2); font-size: 0.93rem; margin: 2px 0 6px; }
+      .game .g-meta .win { color: var(--win); font-weight: 700; }
+      .card-foot { margin-top: 12px; }
+      .card-foot a { color: var(--focus); font-weight: 600; font-size: 0.93rem; text-decoration: none; display: inline-block; padding: 6px 0; }
+      .card-foot a:hover { text-decoration: underline; }
+      .card-error { color: var(--ink-2); margin: 12px 0 4px; }
+      .skeleton { color: var(--ink-3); }
+
+      /* Live game visual card (games in progress only) */
+      .live-card { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 12px; }
+      .live-head { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; margin-bottom: 10px; }
+      .live-pill {
+        display: inline-flex; align-items: center; gap: 6px; background: var(--live); color: #fff;
+        font-weight: 700; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase;
+        border-radius: 999px; padding: 3px 10px 3px 8px;
+      }
+      .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: livePulse 1.6s ease-in-out infinite; }
+      @keyframes livePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+      .live-clock { font-weight: 700; font-size: 0.98rem; }
+      .live-venue { color: var(--ink-3); font-size: 0.88rem; }
+      .live-rows { display: grid; gap: 9px; }
+      .live-row { display: flex; align-items: center; gap: 12px; }
+      .logo-chip {
+        width: 46px; height: 46px; flex: none; border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        background: var(--surface-2); border: 2px solid var(--tc, var(--line));
+      }
+      .logo-chip img { width: 36px; height: 36px; object-fit: contain; display: block; }
+      .live-row .who { flex: 1; min-width: 0; }
+      .live-row .who .nm { font-weight: 700; font-size: 1.05rem; display: block; line-height: 1.2; }
+      .live-row .who .sub { color: var(--ink-3); font-size: 0.85rem; font-weight: 600; }
+      .live-row .sc {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-size: 2.1rem; font-weight: 700; line-height: 1; min-width: 44px; text-align: right;
+      }
+      .live-row .sc.normal { font-weight: 600; color: var(--ink-2); }
+      .live-situation { margin: 10px 0 0; color: var(--ink-2); font-size: 0.93rem; }
+      .live-situation .sit-main { font-weight: 700; color: var(--ink); }
+      .live-lastplay { margin: 3px 0 0; color: var(--ink-3); font-size: 0.88rem; }
+      .winprob { margin-top: 12px; }
+      .winprob .wp-cap { color: var(--ink-3); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 4px; }
+      .winprob .wp-labels { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; }
+      .winprob .wp-track { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: var(--surface-2); }
+      .winprob .wp-seg { height: 100%; }
+      table.linescore { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 0.93rem; }
+      table.linescore th, table.linescore td { padding: 5px 6px; text-align: center; border-bottom: 1px solid var(--line); }
+      table.linescore th { color: var(--ink-3); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
+      table.linescore td.team, table.linescore th.team { text-align: left; font-weight: 700; }
+      table.linescore td.total { font-weight: 700; }
+      .live-stats { margin-top: 14px; display: grid; gap: 10px; }
+      .ls-cap, .hl-cap { color: var(--ink-3); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin: 0; }
+      .stat-row .stat-nums { display: flex; align-items: baseline; gap: 8px; font-size: 0.93rem; }
+      .stat-row .stat-nums .v { font-weight: 700; min-width: 46px; }
+      .stat-row .stat-nums .v.r { text-align: right; }
+      .stat-row .stat-nums .lab { flex: 1; text-align: center; color: var(--ink-2); font-weight: 600; font-size: 0.88rem; }
+      .stat-bars { display: flex; gap: 4px; margin-top: 3px; }
+      .stat-half { flex: 1; height: 7px; background: var(--surface-2); border-radius: 999px; display: flex; overflow: hidden; }
+      .stat-half.l { justify-content: flex-end; }
+      .stat-fill { height: 100%; border-radius: 999px; }
+      .live-highlights { margin-top: 16px; }
+      .hl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+      .hl-card { display: block; text-decoration: none; color: var(--ink); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+      .hl-card:hover { background: var(--surface-2); }
+      .hl-thumb { position: relative; display: block; aspect-ratio: 16 / 9; background: var(--surface-2); }
+      .hl-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .hl-dur { position: absolute; right: 6px; bottom: 6px; background: rgba(0,0,0,0.78); color: #fff; font-size: 0.76rem; font-weight: 700; border-radius: 5px; padding: 1px 6px; }
+      .hl-play {
+        position: absolute; left: 6px; bottom: 6px; width: 22px; height: 22px; border-radius: 50%;
+        background: rgba(0,0,0,0.78); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;
+      }
+      .hl-title { display: block; font-size: 0.9rem; font-weight: 600; line-height: 1.35; padding: 8px 10px 10px; }
+      .hl-note { color: var(--ink-2); font-size: 0.92rem; margin: 8px 0 0; }
+      .hl-search { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+      .hl-search-link {
+        display: inline-flex; align-items: center; gap: 6px; min-height: 38px;
+        padding: 7px 13px; border-radius: 999px; border: 1px solid var(--line);
+        background: var(--surface); color: var(--ink); text-decoration: none;
+        font-weight: 600; font-size: 0.9rem;
+      }
+      .hl-search-link:hover { background: var(--surface-2); text-decoration: underline; }
+      @media (max-width: 420px) { .hl-grid { grid-template-columns: 1fr; } }
+
+      /* Highlight search links shown on every card, live or snapshot */
+      .card-highlights { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 12px; }
+      .card-highlights .hl-note { margin-top: 6px; }
+
+      .other-sites { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .site-link {
+        display: block; background: var(--surface); border: 1px solid var(--line);
+        border-radius: 10px; padding: 14px 16px; color: var(--ink); text-decoration: none;
+      }
+      .site-link:hover { background: var(--surface-2); }
+      .site-link .s-name { font-weight: 700; display: block; }
+      .site-link .s-desc { color: var(--ink-2); font-size: 0.92rem; display: block; margin-top: 2px; }
+
+      footer.page { margin-top: 40px; color: var(--ink-3); font-size: 0.88rem; }
+      footer.page p { margin: 4px 0; }
+
+      @media (max-width: 700px) {
+        .next-list, .cards, .other-sites { grid-template-columns: 1fr; }
+        .wrap { padding: 0 13px 48px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .live-dot { animation: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="page">
+        <h1>Sports Teams</h1>
+        <p class="lede">Records, standings, next games, and latest results for the six teams followed here. Scores and schedules come from ESPN.</p>
+        <div class="status-row">
+          <button class="btn" id="refreshBtn" type="button">Refresh scores</button>
+          <p id="statusText" role="status">Loading the latest from ESPN…</p>
+        </div>
+        <div class="banner" id="failBanner">
+          <span id="failText">Live data could not be loaded.</span>
+          <button class="btn" id="retryBtn" type="button">Retry</button>
+        </div>
+        <nav class="teams-nav" aria-label="Teams">
+          <a href="#lions"><span class="dot" style="--c:#0076b6"></span>Detroit Lions</a>
+          <a href="#tigers"><span class="dot" style="--c:#fa4616"></span>Detroit Tigers</a>
+          <a href="#pistons"><span class="dot" style="--c:#c8102e"></span>Detroit Pistons</a>
+          <a href="#redsox"><span class="dot" style="--c:#bd3039"></span>Boston Red Sox</a>
+          <a href="#uconn-men"><span class="dot" style="--c:#0c2340"></span>UConn Men</a>
+          <a href="#uconn-women"><span class="dot" style="--c:#5b7a99"></span>UConn Women</a>
+        </nav>
+      </header>
+
+      <main>
+        <h2 class="section-title">Up next</h2>
+        <div class="next-list" id="nextList"></div>
+
+        <h2 class="section-title">Team by team</h2>
+        <div class="cards" id="cards"></div>
+
+        <h2 class="section-title">Other sites</h2>
+        <div class="other-sites">
+          <a class="site-link" href="https://ejyoungr-hash.github.io/moon/">
+            <span class="s-name">The Moon</span>
+            <span class="s-desc">Moon photos, facts, a quiz, and a Moon phase memory game.</span>
+          </a>
+          <a class="site-link" href="https://ejyoungr-hash.github.io/daily-devotionals-for-men/">
+            <span class="s-name">Daily Devotionals for Men</span>
+            <span class="s-desc">A daily devotional series with each day&rsquo;s passage and reading.</span>
+          </a>
+        </div>
+      </main>
+
+      <footer class="page">
+        <p>Data: ESPN public API (site.api.espn.com). Game times are shown in Eastern Time.</p>
+      </footer>
+    </div>
+
+    <script>
+      "use strict";
+
+      var TEAMS = [
+        { key: "lions", anchor: "lions", name: "Detroit Lions", short: "Lions",
+          league: "NFL · NFC North", path: "football/nfl", id: "8", color: "#0076b6" },
+        { key: "tigers", anchor: "tigers", name: "Detroit Tigers", short: "Tigers",
+          league: "MLB · AL Central", path: "baseball/mlb", id: "6", color: "#fa4616" },
+        { key: "pistons", anchor: "pistons", name: "Detroit Pistons", short: "Pistons",
+          league: "NBA · Eastern Conference · Central Division", path: "basketball/nba", id: "8", color: "#c8102e" },
+        { key: "redsox", anchor: "redsox", name: "Boston Red Sox", short: "Red Sox",
+          league: "MLB · AL East", path: "baseball/mlb", id: "2", color: "#bd3039" },
+        { key: "uconnm", anchor: "uconn-men", name: "UConn Huskies — Men", short: "UConn Men",
+          league: "NCAA Men's Basketball · Big East", path: "basketball/mens-college-basketball", id: "41", color: "#0c2340" },
+        { key: "uconnw", anchor: "uconn-women", name: "UConn Huskies — Women", short: "UConn Women",
+          league: "NCAA Women's Basketball · Big East", path: "basketball/womens-college-basketball", id: "41", color: "#5b7a99" }
+      ];
+
+      /* Verified snapshot from ESPN, fetched Saturday, November 14, 2026 at
+         10:36 PM ET. Shown only until live data loads, or if it cannot load. */
+      var SNAPSHOT_LABEL = "Snapshot · Sat, Nov 14, 2026";
+      var SNAPSHOT = {
+        lions: {
+          record: "6-2", standing: "5th in National Football Conference",
+          espn: "https://www.espn.com/nfl/team/_/name/det/detroit-lions",
+          live: null,
+          last: { title: "at Miami Dolphins", result: "Won 19–9", detail: "Final · Sun, Nov 8" },
+          next: { title: "vs New England Patriots", when: "Sun, Nov 15 · 9:30 AM ET", extra: "" }
+        },
+        tigers: {
+          record: "76-86", standing: "2026 season complete",
+          espn: "https://www.espn.com/mlb/team/_/name/det/detroit-tigers",
+          live: null,
+          last: { title: "vs Pittsburgh Pirates", result: "Lost 2–4", detail: "Final · Sun, Sep 27, 2026" },
+          next: { title: "vs Chicago White Sox", when: "Thu, Mar 25, 2027 · Time TBD", extra: "2027 season opener" }
+        },
+        pistons: {
+          record: "8-3", standing: "1st in Central Division",
+          espn: "https://www.espn.com/nba/team/_/name/det/detroit-pistons",
+          live: null,
+          last: { title: "at Washington Wizards", result: "Won 144–140", detail: "Final/2OT · Thu, Nov 12" },
+          next: { title: "at San Antonio Spurs", when: "Tue, Nov 17 · 8:00 PM ET", extra: "" }
+        },
+        redsox: {
+          record: "87-75", standing: "2026 season complete",
+          espn: "https://www.espn.com/mlb/team/_/name/bos/boston-red-sox",
+          live: null,
+          last: { title: "vs Chicago Cubs", result: "Lost 2–6", detail: "Final · Sun, Sep 27, 2026" },
+          next: { title: "at Seattle Mariners", when: "Thu, Mar 25, 2027 · Time TBD", extra: "2027 season opener" }
+        },
+        uconnm: {
+          record: "4-0", standing: "1st in Big East",
+          espn: "https://www.espn.com/mens-college-basketball/team/_/id/41/uconn-huskies",
+          live: null,
+          last: { title: "vs Ohio State Buckeyes", result: "Won 84–68", detail: "Final · Fri, Nov 13" },
+          next: { title: "at Arizona Wildcats", when: "Wed, Nov 18 · 9:00 PM ET", extra: "" }
+        },
+        uconnw: {
+          record: "3-1", standing: "1st in Big East",
+          espn: "https://www.espn.com/womens-college-basketball/team/_/id/41/uconn-huskies",
+          live: null,
+          last: { title: "at Ohio State Buckeyes", result: "Won 87–55", detail: "Final · Thu, Nov 12" },
+          next: { title: "at Louisville Cardinals", when: "Sun, Nov 15 · 5:30 PM ET", extra: "" }
+        }
+      };
+
+      var dayFmt = new Intl.DateTimeFormat("en-US", { timeZone: "America/Detroit", weekday: "short", month: "short", day: "numeric" });
+      var dayYearFmt = new Intl.DateTimeFormat("en-US", { timeZone: "America/Detroit", weekday: "short", month: "short", day: "numeric", year: "numeric" });
+      var timeFmt = new Intl.DateTimeFormat("en-US", { timeZone: "America/Detroit", hour: "numeric", minute: "2-digit" });
+      var stampFmt = new Intl.DateTimeFormat("en-US", { timeZone: "America/Detroit", weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+
+      function fmtWhen(date, timeValid) {
+        var nowYear = new Date().getFullYear();
+        var day = (date.getFullYear() !== nowYear ? dayYearFmt : dayFmt).format(date);
+        if (timeValid === false) return day + " · Time TBD";
+        return day + " · " + timeFmt.format(date) + " ET";
+      }
+      function fmtDayShort(date) {
+        var nowYear = new Date().getFullYear();
+        return (date.getFullYear() !== nowYear ? dayYearFmt : dayFmt).format(date);
+      }
+      function esc(s) {
+        return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+      }
+      function scoreVal(c) {
+        var sc = c ? c.score : null;
+        if (sc == null) return null;
+        if (typeof sc === "object") {
+          if (sc.displayValue != null && sc.displayValue !== "") return sc.displayValue;
+          if (sc.value != null) return String(sc.value);
+          return null;
+        }
+        return String(sc);
+      }
+
+      function parseEvent(e, teamId) {
+        var comp = (e.competitions && e.competitions[0]) || {};
+        var st = (comp.status && comp.status.type) || {};
+        var competitors = comp.competitors || [];
+        var ours = null, opp = null;
+        for (var i = 0; i < competitors.length; i++) {
+          var c = competitors[i];
+          if (String(c.team && c.team.id) === String(teamId)) ours = c; else opp = c;
+        }
+        var title = e.name || "";
+        if (ours && opp && opp.team) {
+          title = (ours.homeAway === "home" ? "vs " : "at ") + (opp.team.displayName || opp.team.shortDisplayName || "");
+        }
+        var venue = "";
+        if (comp.venue) venue = comp.venue.fullName || "";
+        var tv = "";
+        if (comp.broadcasts && comp.broadcasts.length) {
+          var b = comp.broadcasts[0];
+          if (b.media && b.media.shortName) tv = b.media.shortName;
+          else if (b.names && b.names.length) tv = b.names[0];
+        }
+        return {
+          id: e.id || "", date: new Date(e.date), name: e.name || "", title: title,
+          state: st.state || "", completed: !!st.completed, detail: st.detail || st.shortDetail || "",
+          timeValid: e.timeValid !== false, venue: venue, tv: tv,
+          ours: ours, opp: opp, rawEvent: e
+        };
+      }
+
+      function resultLine(ev) {
+        if (!ev.ours || !ev.opp) return "";
+        var os = scoreVal(ev.ours), ps = scoreVal(ev.opp);
+        if (os == null || ps == null) return "";
+        var word = ev.ours.winner ? "Won" : (ev.opp.winner ? "Lost" : "");
+        if (!word) {
+          var a = parseFloat(os), b = parseFloat(ps);
+          if (!isNaN(a) && !isNaN(b) && a !== b) word = a > b ? "Won" : "Lost";
+        }
+        return (word ? word + " " : "") + os + "–" + ps;
+      }
+      function liveScoreLine(ev) {
+        if (!ev.ours || !ev.opp) return "";
+        var os = scoreVal(ev.ours), ps = scoreVal(ev.opp);
+        if (os == null || ps == null) return "";
+        var oa = (ev.ours.team && (ev.ours.team.abbreviation || "")) || "Us";
+        var pa = (ev.opp.team && (ev.opp.team.abbreviation || "")) || "Opp";
+        return oa + " " + os + " · " + pa + " " + ps;
+      }
+
+      /* The model is built from the schedule payload alone. ESPN's
+         team-detail endpoint (/teams/{id}) sends no CORS header, so a
+         browser fetch to it always fails; the schedule endpoint sends
+         Access-Control-Allow-Origin: * and its payload already embeds
+         the team's recordSummary, standingSummary and clubhouse link. */
+      function toModel(schedJson, team) {
+        var t = schedJson.team || {};
+        var espn = t.clubhouse || (SNAPSHOT[team.key] || {}).espn || "";
+        var events = (schedJson.events || []).map(function (e) { return parseEvent(e, team.id); });
+        events.sort(function (a, b) { return a.date - b.date; });
+        var live = null, last = null, next = null;
+        events.forEach(function (ev) {
+          if (ev.state === "in") live = ev;
+          if (ev.completed) last = ev;
+          if (ev.state === "pre" && !next) next = ev;
+        });
+        var model = {
+          record: t.recordSummary || "", standing: t.standingSummary || "",
+          espn: espn,
+          live: null, last: null, next: null
+        };
+        if (live) {
+          var ls = liveScoreLine(live);
+          model.live = { title: live.title, detail: (live.detail || "In progress") + (ls ? " — " + ls : "") };
+          model._liveId = live.id;
+        }
+        if (last) {
+          model.last = {
+            title: last.title, result: resultLine(last),
+            detail: (last.detail || "Final") + " · " + fmtDayShort(last.date)
+          };
+        }
+        if (next) {
+          var extra = [];
+          if (next.venue) extra.push(next.venue);
+          if (next.tv) extra.push("TV: " + next.tv);
+          model.next = { title: next.title, when: fmtWhen(next.date, next.timeValid), extra: extra.join(" · ") };
+        }
+        var req = schedJson.requestedSeason || {};
+        model._seasonYear = req.year;
+        /* Offseason: the embedded record still belongs to the finished
+           season (seasonSummary differs from the requested season), or
+           no game has been played and the next one is over a month out. */
+        model._needsOffseason = !last && !live && (
+          (!!t.seasonSummary && !!req.displayName && t.seasonSummary !== req.displayName) ||
+          (!!next && (next.date - new Date()) > 30 * 24 * 60 * 60 * 1000)
+        );
+        return model;
+      }
+
+      function offseasonModel(schedJson, team, base) {
+        var events = (schedJson.events || []).map(function (e) { return parseEvent(e, team.id); });
+        events.sort(function (a, b) { return a.date - b.date; });
+        var w = 0, l = 0, last = null;
+        events.forEach(function (ev) {
+          if (ev.completed) {
+            last = ev;
+            if (ev.ours) { if (ev.ours.winner) w++; else if (ev.opp && ev.opp.winner) l++; }
+          }
+        });
+        var year = schedJson.requestedSeason && schedJson.requestedSeason.year;
+        var t = schedJson.team || {};
+        var model = {
+          record: t.recordSummary || ((w || l) ? (w + "-" + l) : base.record),
+          standing: year ? (year + " season complete") : base.standing,
+          espn: base.espn, live: null, last: base.last, next: base.next
+        };
+        if (last) {
+          model.last = {
+            title: last.title, result: resultLine(last),
+            detail: (last.detail || "Final") + " · " + fmtDayShort(last.date)
+          };
+        }
+        if (model.next && base._seasonYear) {
+          var opener = base._seasonYear + " season opener";
+          model.next = {
+            title: model.next.title, when: model.next.when,
+            extra: model.next.extra ? model.next.extra + " · " + opener : opener
+          };
+        }
+        return model;
+      }
+
+      function fetchJson(url) {
+        return fetch(url).then(function (r) {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        });
+      }
+      function fetchJsonRetry(url) {
+        return fetchJson(url).catch(function () { return fetchJson(url); });
+      }
+
+      /* Schedule events omit the score while a game is in progress, so
+         pull the live score from the league scoreboard endpoint (also
+         CORS-enabled) and append it to the live detail. Best effort:
+         any failure leaves the schedule-only detail in place. */
+      function enrichLive(model, sbJson, team) {
+        var events = sbJson.events || [];
+        var match = null, i, ev;
+        for (i = 0; i < events.length; i++) {
+          if (String(events[i].id) === String(model._liveId)) { match = events[i]; break; }
+        }
+        if (!match) {
+          for (i = 0; i < events.length; i++) {
+            ev = parseEvent(events[i], team.id);
+            if (ev.state === "in" && ev.ours) { match = events[i]; break; }
+          }
+        }
+        if (!match || !model.live) return;
+        var ls = liveScoreLine(parseEvent(match, team.id));
+        if (ls) model.live.detail = model.live.detail + " — " + ls;
+      }
+
+      /* ---------- Live game visual data ----------
+         Built only from ESPN's CORS-enabled public endpoints on
+         site.api.espn.com: the league scoreboard (logos, linescores,
+         clock, situation, win probability) and the game summary
+         (box-score team stats and the videos list). Every number,
+         thumbnail, title and link below comes straight from those
+         payloads; anything missing is simply not rendered. */
+      function fmtDuration(sec) {
+        var s = parseInt(sec, 10);
+        if (isNaN(s) || s < 0) return "";
+        var m = Math.floor(s / 60), r = s % 60;
+        return m + ":" + (r < 10 ? "0" : "") + r;
+      }
+      function statNum(stat) {
+        if (!stat) return null;
+        if (typeof stat.value === "number" && isFinite(stat.value)) return stat.value;
+        var n = parseFloat(stat.displayValue);
+        return isNaN(n) ? null : n;
+      }
+      function findStat(list, names) {
+        if (!list) return null;
+        for (var i = 0; i < names.length; i++) {
+          for (var j = 0; j < list.length; j++) {
+            if (list[j].name === names[i]) return list[j];
+          }
+        }
+        return null;
+      }
+      var NO_BAR_STATS = { thirdDownEff: 1, fourthDownEff: 1, completionAttempts: 1, totalPenaltiesYards: 1, sacksYardsLost: 1, redZoneAttempts: 1 };
+      var STAT_DEFS = {
+        football: [
+          { names: ["totalYards"], label: "Total yards" },
+          { names: ["netPassingYards"], label: "Passing yards" },
+          { names: ["rushingYards"], label: "Rushing yards" },
+          { names: ["firstDowns"], label: "First downs" },
+          { names: ["turnovers"], label: "Turnovers" },
+          { names: ["possessionTime"], label: "Possession" },
+          { names: ["thirdDownEff"], label: "3rd down", bar: false }
+        ],
+        basketball: [
+          { names: ["fieldGoalPct"], label: "Field goal %" },
+          { names: ["threePointFieldGoalPct", "threePointPct"], label: "Three-point %" },
+          { names: ["freeThrowPct"], label: "Free throw %" },
+          { names: ["totalRebounds", "rebounds"], label: "Rebounds" },
+          { names: ["assists"], label: "Assists" },
+          { names: ["totalTurnovers", "turnovers"], label: "Turnovers" }
+        ]
+      };
+      function sportFamily(team) {
+        if (team.path.indexOf("football") === 0) return "football";
+        if (team.path.indexOf("basketball") === 0) return "basketball";
+        return "other";
+      }
+      function regulationPeriods(team) {
+        var fam = sportFamily(team);
+        if (fam === "football") return 4;
+        if (fam === "basketball") return team.path.indexOf("mens-college") >= 0 ? 2 : 4;
+        if (team.path.indexOf("baseball") === 0) return 9;
+        return 4;
+      }
+      function periodLabels(team, count) {
+        var reg = regulationPeriods(team), fam = sportFamily(team), labels = [];
+        for (var i = 1; i <= count; i++) {
+          if (fam === "other" || team.path.indexOf("baseball") === 0) labels.push(String(i));
+          else if (i <= reg) labels.push(reg === 2 ? (i === 1 ? "1st" : "2nd") : "Q" + i);
+          else labels.push(i - reg === 1 ? "OT" : (i - reg) + "OT");
+        }
+        return labels;
+      }
+      function buildStats(team, sideIds, summary, sbStatsLists) {
+        var lists = [null, null];
+        if (summary && summary.boxscore && summary.boxscore.teams) {
+          summary.boxscore.teams.forEach(function (bt) {
+            var id = String(bt.team && bt.team.id);
+            for (var i = 0; i < sideIds.length; i++) if (sideIds[i] === id) lists[i] = bt.statistics || null;
+          });
+        }
+        if (!lists[0] && sbStatsLists) lists[0] = sbStatsLists[0];
+        if (!lists[1] && sbStatsLists) lists[1] = sbStatsLists[1];
+        if (!lists[0] || !lists[1]) return [];
+        var defs = STAT_DEFS[sportFamily(team)] || [];
+        var out = [];
+        defs.forEach(function (d) {
+          var a = findStat(lists[0], d.names), b = findStat(lists[1], d.names);
+          if (!a || !b) return;
+          var na = statNum(a), nb = statNum(b);
+          out.push({
+            label: d.label,
+            disp: [String(a.displayValue == null ? "" : a.displayValue).trim(), String(b.displayValue == null ? "" : b.displayValue).trim()],
+            nums: [na, nb],
+            bar: d.bar !== false && na != null && nb != null && (na + nb) > 0
+          });
+        });
+        if (out.length) return out;
+        /* Generic fallback (e.g. baseball): any stat both teams report
+           with a numeric value, using ESPN's own label. */
+        for (var i = 0; i < lists[0].length && out.length < 6; i++) {
+          var s0 = lists[0][i];
+          if (NO_BAR_STATS[s0.name]) continue;
+          var s1 = findStat(lists[1], [s0.name]);
+          if (!s1) continue;
+          var x = statNum(s0), y = statNum(s1);
+          if (x == null || y == null) continue;
+          out.push({
+            label: s0.label || s0.name,
+            disp: [String(s0.displayValue == null ? "" : s0.displayValue).trim(), String(s1.displayValue == null ? "" : s1.displayValue).trim()],
+            nums: [x, y], bar: (x + y) > 0
+          });
+        }
+        return out;
+      }
+      function buildVideos(summary) {
+        var vids = (summary && summary.videos) || [];
+        var out = [];
+        for (var i = 0; i < vids.length && out.length < 4; i++) {
+          var v = vids[i];
+          var web = v.links && v.links.web;
+          var href = web && (web.href || (web.self && web.self.href));
+          var title = v.headline || v.description || "";
+          if (!href || !v.thumbnail || !title) continue;
+          out.push({ title: title, thumb: v.thumbnail, href: href, dur: fmtDuration(v.duration) });
+        }
+        return out;
+      }
+      function buildLiveGame(rawEvent, team, summary) {
+        if (!rawEvent) return null;
+        var ev = parseEvent(rawEvent, team.id);
+        var comp = (rawEvent.competitions && rawEvent.competitions[0]) || {};
+        var competitors = (comp.competitors || []).slice();
+        competitors.sort(function (a, b) { return (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0); });
+        if (competitors.length < 2) return null;
+        var sides = competitors.map(function (c) {
+          var t = c.team || {};
+          var rec = "";
+          (c.records || []).forEach(function (r) { if (r.type === "total") rec = r.summary || ""; });
+          return {
+            id: String(t.id || ""), abbr: t.abbreviation || "", name: t.displayName || t.shortDisplayName || "",
+            logo: t.logo || "", color: t.color ? "#" + t.color : "#888888",
+            score: scoreVal(c) || "0", homeAway: c.homeAway || "", record: rec,
+            linescores: (c.linescores || []).map(function (ls) {
+              return ls.displayValue != null && ls.displayValue !== "" ? String(ls.displayValue) : (ls.value != null ? String(ls.value) : "–");
+            }),
+            statistics: c.statistics || []
+          };
+        });
+        var sit = comp.situation || null;
+        var winProb = null;
+        var prob = sit && sit.lastPlay && sit.lastPlay.probability;
+        if (prob && typeof prob.homeWinPercentage === "number" && typeof prob.awayWinPercentage === "number") {
+          winProb = sides.map(function (s) { return s.homeAway === "home" ? prob.homeWinPercentage : prob.awayWinPercentage; });
+        }
+        if (!winProb && summary && summary.winprobability && summary.winprobability.length) {
+          var lastWp = summary.winprobability[summary.winprobability.length - 1];
+          if (lastWp && typeof lastWp.homeWinPercentage === "number") {
+            winProb = sides.map(function (s) {
+              return s.homeAway === "home" ? lastWp.homeWinPercentage : Math.max(0, 1 - lastWp.homeWinPercentage - (lastWp.tiePercentage || 0));
+            });
+          }
+        }
+        var hlDate = "";
+        try {
+          hlDate = new Intl.DateTimeFormat("en-US", { timeZone: "America/Detroit", month: "long", day: "numeric", year: "numeric" }).format(ev.date).replace(",", "");
+        } catch (e2) { hlDate = ""; }
+        var ourSide = null, oppSide = null;
+        sides.forEach(function (s) { if (String(s.id) === String(team.id)) ourSide = s; else if (!oppSide) oppSide = s; });
+        var hlTeams = (ourSide && oppSide) ? (ourSide.name + " vs " + oppSide.name) : (sides[0].name + " vs " + sides[1].name);
+        var hlQuery = hlTeams + " highlights" + (hlDate ? " " + hlDate : "");
+        var hlYoutube = "https://www.youtube.com/results?search_query=" + encodeURIComponent(hlQuery);
+        var hlGoogle = "https://www.google.com/search?tbm=vid&q=" + encodeURIComponent(hlQuery);
+        return {
+          detail: ev.detail || "In progress",
+          venue: ev.venue || "",
+          sides: sides,
+          situation: sit ? {
+            main: sit.downDistanceText || "",
+            lastPlay: (sit.lastPlay && sit.lastPlay.text) || ""
+          } : null,
+          winProb: winProb,
+          stats: buildStats(team, sides.map(function (s) { return s.id; }), summary, sides.map(function (s) { return s.statistics; })),
+          videos: buildVideos(summary),
+          highlightQuery: hlQuery,
+          youtubeUrl: hlYoutube,
+          googleUrl: hlGoogle,
+          periodCount: Math.max(sides[0].linescores.length, sides[1].linescores.length)
+        };
+      }
+
+      function loadTeam(team) {
+        var base = "https://site.api.espn.com/apis/site/v2/sports/" + team.path + "/teams/" + team.id;
+        return fetchJsonRetry(base + "/schedule").then(function (sched) {
+          var model = toModel(sched, team);
+          var chain = Promise.resolve(model);
+          if (model._needsOffseason && model._seasonYear) {
+            chain = chain.then(function (m) {
+              return fetchJsonRetry(base + "/schedule?season=" + (m._seasonYear - 1)).then(function (prev) {
+                return offseasonModel(prev, team, m);
+              }).catch(function () { return m; });
+            });
+          }
+          return chain.then(function (m) {
+            if (!m.live) return m;
+            var sbP = fetchJsonRetry("https://site.api.espn.com/apis/site/v2/sports/" + team.path + "/scoreboard").catch(function () { return null; });
+            var sumP = m._liveId
+              ? fetchJsonRetry("https://site.api.espn.com/apis/site/v2/sports/" + team.path + "/summary?event=" + encodeURIComponent(m._liveId)).catch(function () { return null; })
+              : Promise.resolve(null);
+            return Promise.all([sbP, sumP]).then(function (res) {
+              var sb = res[0], summary = res[1];
+              if (sb) {
+                enrichLive(m, sb, team);
+                var events = sb.events || [], match = null, i, pev;
+                for (i = 0; i < events.length; i++) {
+                  if (String(events[i].id) === String(m._liveId)) { match = events[i]; break; }
+                }
+                if (!match) {
+                  for (i = 0; i < events.length; i++) {
+                    pev = parseEvent(events[i], team.id);
+                    if (pev.state === "in" && pev.ours) { match = events[i]; break; }
+                  }
+                }
+                if (match) m.liveGame = buildLiveGame(match, team, summary);
+              }
+              return m;
+            });
+          });
+        });
+      }
+
+      /* ---------- Rendering ---------- */
+      var cardsEl = document.getElementById("cards");
+      var nextEl = document.getElementById("nextList");
+      var statusEl = document.getElementById("statusText");
+      var bannerEl = document.getElementById("failBanner");
+      var failTextEl = document.getElementById("failText");
+      var refreshBtn = document.getElementById("refreshBtn");
+      var retryBtn = document.getElementById("retryBtn");
+
+      function renderLiveGame(team, model) {
+        var g = model.liveGame;
+        var s = g.sides;
+        var html = '<div class="live-card">';
+        html += '<div class="live-head"><span class="live-pill"><span class="live-dot"></span>Live</span>' +
+          '<span class="live-clock">' + esc(g.detail) + "</span>" +
+          (g.venue ? '<span class="live-venue">' + esc(g.venue) + "</span>" : "") + "</div>";
+        var maxScore = Math.max(parseFloat(s[0].score) || 0, parseFloat(s[1].score) || 0);
+        html += '<div class="live-rows">';
+        s.forEach(function (side) {
+          var leading = maxScore > 0 && (parseFloat(side.score) || 0) === maxScore;
+          html += '<div class="live-row"><span class="logo-chip" style="--tc:' + esc(side.color) + '">' +
+            (side.logo ? '<img src="' + esc(side.logo) + '" alt="' + esc(side.name) + ' logo" loading="lazy" onerror="this.style.display=\'none\'">' : "") + "</span>" +
+            '<span class="who"><span class="nm">' + esc(side.name) + '</span><span class="sub">' + esc(side.abbr) + (side.record ? " · " + esc(side.record) : "") + "</span></span>" +
+            '<span class="sc' + (leading ? "" : " normal") + '">' + esc(side.score) + "</span></div>";
+        });
+        html += "</div>";
+        if (g.situation && (g.situation.main || g.situation.lastPlay)) {
+          if (g.situation.main) html += '<p class="live-situation"><span class="sit-main">' + esc(g.situation.main) + "</span></p>";
+          if (g.situation.lastPlay) html += '<p class="live-lastplay">Last play: ' + esc(g.situation.lastPlay) + "</p>";
+        }
+        if (g.winProb) {
+          var p0 = Math.max(0, Math.min(1, g.winProb[0])), p1 = Math.max(0, Math.min(1, g.winProb[1]));
+          var tot = p0 + p1;
+          if (tot > 0) {
+            var w0 = Math.round((p0 / tot) * 100), w1 = 100 - w0;
+            html += '<div class="winprob"><p class="wp-cap">Win probability</p>' +
+              '<div class="wp-labels"><span>' + esc(s[0].abbr) + " " + w0 + '%</span><span>' + esc(s[1].abbr) + " " + w1 + '%</span></div>' +
+              '<div class="wp-track"><div class="wp-seg" style="width:' + w0 + "%;background:" + esc(s[0].color) + '"></div>' +
+              '<div class="wp-seg" style="width:' + w1 + "%;background:" + esc(s[1].color) + '"></div></div></div>';
+          }
+        }
+        if (g.periodCount > 0) {
+          var labels = periodLabels(team, g.periodCount);
+          html += '<table class="linescore"><thead><tr><th class="team">Team</th>';
+          labels.forEach(function (l) { html += "<th>" + esc(l) + "</th>"; });
+          html += "<th>T</th></tr></thead><tbody>";
+          s.forEach(function (side) {
+            html += '<tr><td class="team">' + esc(side.abbr) + "</td>";
+            for (var i = 0; i < g.periodCount; i++) html += "<td>" + esc(side.linescores[i] != null ? side.linescores[i] : "–") + "</td>";
+            html += '<td class="total">' + esc(side.score) + "</td></tr>";
+          });
+          html += "</tbody></table>";
+        }
+        if (g.stats && g.stats.length) {
+          html += '<div class="live-stats"><p class="ls-cap">Team stats</p>';
+          g.stats.forEach(function (st) {
+            html += '<div class="stat-row"><div class="stat-nums"><span class="v">' + esc(st.disp[0]) + '</span><span class="lab">' + esc(st.label) + '</span><span class="v r">' + esc(st.disp[1]) + "</span></div>";
+            if (st.bar) {
+              var mx = Math.max(st.nums[0], st.nums[1]);
+              var f0 = mx > 0 ? Math.round((st.nums[0] / mx) * 100) : 0;
+              var f1 = mx > 0 ? Math.round((st.nums[1] / mx) * 100) : 0;
+              html += '<div class="stat-bars"><span class="stat-half l"><span class="stat-fill" style="width:' + f0 + "%;background:" + esc(s[0].color) + '"></span></span>' +
+                '<span class="stat-half"><span class="stat-fill" style="width:' + f1 + "%;background:" + esc(s[1].color) + '"></span></span></div>';
+            }
+            html += "</div>";
+          });
+          html += "</div>";
+        }
+        html += '<div class="live-highlights"><p class="hl-cap">Highlights</p>';
+        if (g.youtubeUrl && g.googleUrl) {
+          html += '<div class="hl-search">' +
+            '<a class="hl-search-link" href="' + esc(g.youtubeUrl) + '" target="_blank" rel="noopener">Find highlights on YouTube</a>' +
+            '<a class="hl-search-link" href="' + esc(g.googleUrl) + '" target="_blank" rel="noopener">Find highlights on Google</a>' +
+            "</div>";
+        }
+        if (g.videos && g.videos.length) {
+          html += '<div class="hl-grid">';
+          g.videos.forEach(function (v) {
+            html += '<a class="hl-card" href="' + esc(v.href) + '" target="_blank" rel="noopener"><span class="hl-thumb">' +
+              '<img src="' + esc(v.thumb) + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' +
+              '<span class="hl-play">&#9654;</span>' + (v.dur ? '<span class="hl-dur">' + esc(v.dur) + "</span>" : "") + "</span>" +
+              '<span class="hl-title">' + esc(v.title) + "</span></a>";
+          });
+          html += "</div>";
+        } else {
+          html += '<p class="hl-note">No highlights yet — ESPN posts clips as the game goes on. Tap Refresh to check again.</p>';
+        }
+        html += "</div></div>";
+        return html;
+      }
+
+      /* Highlight search links for a team's most relevant game: the live
+         game if one is on, otherwise the latest result (the game most
+         likely to have clips), otherwise the next game. Built purely
+         from the model already on the card, so the links render for the
+         snapshot and for live data alike — they never depend on the
+         live-game visual card being present. */
+      function highlightSearch(team, model) {
+        var title = "", when = "";
+        if (model.live) { title = model.live.title || ""; }
+        else if (model.last) { title = model.last.title || ""; when = model.last.detail || ""; }
+        else if (model.next) { title = model.next.title || ""; when = model.next.when || ""; }
+        var opp = title.replace(/^(vs|at)\s+/i, "").trim();
+        var datePart = when.split("·").pop().trim();
+        if (/^(final|in progress)/i.test(datePart)) datePart = "";
+        var q = team.name + (opp ? " vs " + opp : "") + " highlights" + (datePart ? " " + datePart : "");
+        return {
+          query: q,
+          youtube: "https://www.youtube.com/results?search_query=" + encodeURIComponent(q),
+          google: "https://www.google.com/search?tbm=vid&q=" + encodeURIComponent(q)
+        };
+      }
+
+      function renderHighlightsBlock(team, model) {
+        var hs = highlightSearch(team, model);
+        return '<div class="card-highlights"><p class="hl-cap">Highlights</p>' +
+          '<div class="hl-search">' +
+          '<a class="hl-search-link" href="' + esc(hs.youtube) + '" target="_blank" rel="noopener">Find highlights on YouTube</a>' +
+          '<a class="hl-search-link" href="' + esc(hs.google) + '" target="_blank" rel="noopener">Find highlights on Google</a>' +
+          "</div>" +
+          '<p class="hl-note">Video search for: ' + esc(hs.query) + "</p></div>";
+      }
+
+      function gameBlock(label, title, metaHtml, isLive) {
+        return '<div class="game"><p class="g-label' + (isLive ? " live" : "") + '">' + esc(label) + "</p>" +
+          '<p class="g-title">' + esc(title) + "</p>" +
+          (metaHtml ? '<p class="g-meta">' + metaHtml + "</p>" : "") + "</div>";
+      }
+
+      function renderNextItem(team, model) {
+        var el = document.getElementById("next-" + team.key);
+        if (!el) return;
+        var detail;
+        if (model.live) detail = '<span class="live-tag">Live</span> ' + esc(model.live.title) + " — " + esc(model.live.detail);
+        else if (model.next) detail = esc(model.next.title) + " · " + esc(model.next.when);
+        else if (model.last) detail = "Latest: " + esc(model.last.title) + (model.last.result ? " — " + esc(model.last.result) : "");
+        else detail = "No games listed";
+        el.innerHTML = '<span class="dot" style="--c:' + team.color + '"></span><span style="flex:1"><span class="tname">' + esc(team.name) + '</span><span class="tdetail" style="display:block">' + detail + "</span></span>";
+      }
+
+      function buildShells() {
+        cardsEl.innerHTML = TEAMS.map(function (t) {
+          return '<article class="card" id="card-' + t.key + '" style="--c:' + t.color + '">' +
+            '<div class="card-head"><div><h3>' + esc(t.name) + '</h3><div class="league">' + esc(t.league) + '</div></div></div>' +
+            '<p class="skeleton">Loading…</p></article>';
+        }).join("");
+        nextEl.innerHTML = TEAMS.map(function (t) {
+          return '<a class="next-item" id="next-' + t.key + '" href="#' + t.anchor + '">' +
+            '<span class="dot" style="--c:' + t.color + '"></span>' +
+            '<span style="flex:1"><span class="tname">' + esc(t.name) + '</span><span class="tdetail" style="display:block">Loading…</span></span></a>';
+        }).join("");
+        // Cards carry the anchor id for nav links; JS looks them up by data-key.
+        TEAMS.forEach(function (t) {
+          var card = document.getElementById("card-" + t.key);
+          if (card) { card.setAttribute("data-key", t.key); card.id = t.anchor; }
+        });
+      }
+
+      function cardEl(team) { return document.querySelector('[data-key="' + team.key + '"]'); }
+
+      function renderCard2(team, model, isSnapshot) {
+        var el = cardEl(team);
+        if (!el) return;
+        var keepId = el.id;
+        renderCardInto(el, team, model, isSnapshot);
+        el.id = keepId;
+      }
+      function renderCardInto(el, team, model, isSnapshot) {
+        var html = "";
+        html += '<div class="card-head"><div><h3>' + esc(team.name) + '</h3><div class="league">' + esc(team.league) + "</div></div>";
+        html += '<div class="record"><div class="num">' + esc(model.record || "—") + '</div><div class="lbl">Record</div></div></div>';
+        if (model.standing) {
+          html += '<p class="standing">' + esc(model.standing) +
+            (isSnapshot ? '<span class="badge">' + esc(SNAPSHOT_LABEL) + "</span>" : "") + "</p>";
+        } else if (isSnapshot) {
+          html += '<p class="standing"><span class="badge">' + esc(SNAPSHOT_LABEL) + "</span></p>";
+        }
+        if (model.liveGame) html += renderLiveGame(team, model);
+        else if (model.live) html += gameBlock("Live now", model.live.title, esc(model.live.detail), true);
+        if (model.next) {
+          var nm = esc(model.next.when) + (model.next.extra ? " · " + esc(model.next.extra) : "");
+          html += gameBlock("Next game", model.next.title, nm, false);
+        } else if (!model.live) {
+          html += gameBlock("Next game", "No game scheduled", "", false);
+        }
+        if (model.last) {
+          var lm = (model.last.result ? '<span class="win">' + esc(model.last.result) + "</span> · " : "") + esc(model.last.detail);
+          html += gameBlock("Latest result", model.last.title, lm, false);
+        }
+        /* Highlight search links on every card. When a live-game visual
+           card is present it already carries its own links, so only add
+           the standalone block when there is no live-game card. */
+        if (!model.liveGame) html += renderHighlightsBlock(team, model);
+        if (model.espn) {
+          html += '<div class="card-foot"><a href="' + esc(model.espn) + '" target="_blank" rel="noopener">Full schedule and roster on ESPN</a></div>';
+        }
+        el.innerHTML = html;
+      }
+      function renderErrorCard2(team) {
+        var el = cardEl(team);
+        if (!el) return;
+        el.innerHTML = '<div class="card-head"><div><h3>' + esc(team.name) + '</h3><div class="league">' + esc(team.league) + "</div></div></div>" +
+          '<p class="card-error">Live data for this team could not be loaded. Use the Retry button above to try again.</p>';
+      }
+
+      var loading = false;
+      var liveTimer = null;
+      function loadAll() {
+        if (loading) return;
+        loading = true;
+        if (liveTimer) { clearTimeout(liveTimer); liveTimer = null; }
+        refreshBtn.disabled = true;
+        retryBtn.disabled = true;
+        refreshBtn.textContent = "Refreshing…";
+        statusEl.textContent = "Loading the latest from ESPN…";
+        bannerEl.classList.remove("show");
+
+        var results = {};
+        var jobs = TEAMS.map(function (team) {
+          return loadTeam(team).then(function (model) {
+            results[team.key] = { ok: true, model: model };
+          }).catch(function () {
+            results[team.key] = { ok: false };
+          });
+        });
+
+        Promise.all(jobs).then(function () {
+          var okCount = 0;
+          var anyLive = false;
+          TEAMS.forEach(function (team) {
+            var r = results[team.key];
+            if (r && r.ok) {
+              okCount++;
+              if (r.model.live) anyLive = true;
+              renderCard2(team, r.model, false);
+              renderNextItem(team, r.model);
+            } else {
+              var snap = SNAPSHOT[team.key];
+              if (snap) {
+                renderCard2(team, snap, true);
+                renderNextItem(team, snap);
+              } else {
+                renderErrorCard2(team);
+              }
+            }
+          });
+          var now = new Date();
+          if (okCount === TEAMS.length) {
+            statusEl.textContent = "Live from ESPN · Updated " + stampFmt.format(now) + " ET" + (anyLive ? " · Auto-refresh is on while a game is live" : "");
+          } else if (okCount > 0) {
+            statusEl.textContent = "Updated " + stampFmt.format(now) + " ET · " + okCount + " of " + TEAMS.length + " teams loaded live; the rest show the labeled snapshot.";
+            failTextEl.textContent = "Some teams could not be updated from ESPN. Those teams show the verified snapshot from Saturday, November 14, 2026.";
+            bannerEl.classList.add("show");
+          } else {
+            statusEl.textContent = "Live data could not be loaded. Showing the verified snapshot from Saturday, November 14, 2026.";
+            failTextEl.textContent = "Live data could not be loaded. Check your connection, then retry.";
+            bannerEl.classList.add("show");
+          }
+          loading = false;
+          refreshBtn.disabled = false;
+          retryBtn.disabled = false;
+          refreshBtn.textContent = "Refresh scores";
+          if (anyLive) {
+            liveTimer = setTimeout(function () { loadAll(); }, 45000);
+          }
+        });
+      }
+
+      buildShells();
+      // Show the verified snapshot right away so the page is never blank,
+      // then replace it with live ESPN data as it arrives.
+      TEAMS.forEach(function (team) {
+        var snap = SNAPSHOT[team.key];
+        if (snap) { renderCard2(team, snap, true); renderNextItem(team, snap); }
+      });
+      statusEl.textContent = "Showing the snapshot from Sat, Nov 14, 2026 · Checking ESPN for the latest…";
+
+      refreshBtn.addEventListener("click", loadAll);
+      retryBtn.addEventListener("click", loadAll);
+      loadAll();
+    </script>
+  </body>
+</html>
